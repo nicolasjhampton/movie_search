@@ -2,6 +2,52 @@
 'use strict';
 
 
+/*
+ *  View templates
+ *
+ */
+var noneFound = {
+  "first": "<li class='no-movies'><i class='material-icons icon-help'>help_outline</i>No movies found that match: ",
+  "second": ".</li>"
+};
+
+var movieTemplate = {
+  "imageTag": { "a": "<img class='movie-poster' src='",
+                "b": "'>"},
+  "placeholder": "<i class='material-icons poster-placeholder'>crop_original</i>",
+  "Start": "<li class='movie' data-id='",
+  "imdbID": "'><div class='poster-wrap'>",
+  "Poster": "</div><span class='movie-title'>",
+  "Title": "</span><span class='movie-year'>",
+  "Year": "</span></li>",
+  "order": [
+      "imdbID",
+      "Poster",
+      "Title",
+      "Year"
+  ]
+};
+
+var detailsTemplate = {
+  "imageTag": { "a": "<img alt='movie poster' src='",
+                "b": "'>"},
+  "placeholder": "",
+  "Start": "<div class='details'><header><a class='return' alt='return to search results' href='#'>Search Results</a>",
+  "Poster": "<div><h2 class='clearfix'>",
+  "Title": " (",
+  "Year": ")</h2><h4>IMDB Rating: ",
+  "imdbRating": "</h4></div></header><div><h4>Plot Synopsis:</h4><p>",
+  "Plot": "</p><a alt='link to imdb page' href='http://www.imdb.com/title/",
+  "imdbID": "'>View on IMDB</a></div></div>",
+  "order": [
+    "Poster",
+    "Title",
+    "Year",
+    "imdbRating",
+    "Plot",
+    "imdbID"
+  ]
+};
 
 /*
  *  Search bar
@@ -48,54 +94,6 @@ var onMovieClick = function() {
       .get(query, omdbAPI.formatDetailsPath, 1)
       .then(printDetails)
       .fetch();
-};
-
-/*
- *  View template functions
- *
- */
-
-var noneFound = {
-  "first": "<li class='no-movies'><i class='material-icons icon-help'>help_outline</i>No movies found that match: ",
-  "second": ".</li>"
-};
-
-var movieTemplate = {
-  "imageTag": { "a": "<img class='movie-poster' src='",
-               "b": "'>"},
-  "placeholder": "<i class='material-icons poster-placeholder'>crop_original</i>",
-  "Start": "<li class='movie' data-id='",
-  "imdbID": "'><div class='poster-wrap'>",
-  "Poster": "</div><span class='movie-title'>",
-  "Title": "</span><span class='movie-year'>",
-  "Year": "</span></li>",
-  "order": [
-      "imdbID",
-      "Poster",
-      "Title",
-      "Year"
-  ]
-};
-
-var detailsTemplate = {
-  "imageTag": { "a": "<img alt='movie poster' src='",
-                "b": "'>"},
-  "placeholder": "",
-  "Start": "<div class='details'><header><a class='return' alt='return to search results' href='#'>Search Results</a>",
-  "Poster": "<div><h2 class='clearfix'>",
-  "Title": " (",
-  "Year": ")</h2><h4>IMDB Rating: ",
-  "imdbRating": "</h4></div></header><div><h4>Plot Synopsis:</h4><p>",
-  "Plot": "</p><a alt='link to imdb page' href='http://www.imdb.com/title/",
-  "imdbID": "'>View on IMDB</a></div></div>",
-  "order": [
-    "Poster",
-    "Title",
-    "Year",
-    "imdbRating",
-    "Plot",
-    "imdbID"
-  ]
 };
 
 var formatPoster = function(poster, template) {
