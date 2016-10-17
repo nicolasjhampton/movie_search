@@ -4,7 +4,7 @@ var omdbAPI = {
   "imdbID": "?i=",
   "plot": "&plot=short",
   "json": "&r=json",
-  "callback": "&callback="
+  "callback": "&callback=",
   "formatDetailsPath": function(query) {
     return omdbAPI.imdbID + query.id + omdbAPI.plot + omdbAPI.json + omdbAPI.callback;
   },
