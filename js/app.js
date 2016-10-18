@@ -1,5 +1,5 @@
-!function($, Request, omdbAPI, window, document) {
-'use strict';
+!function($, window, document) {
+ 'use strict';
 
 
 /*
@@ -49,6 +49,55 @@ var detailsTemplate = {
   ]
 };
 
+var omdbAPI = {
+  "hostname": "http://www.omdbapi.com/",
+  "search": "?s=",
+  "imdbID": "?i=",
+  "plot": "&plot=short",
+  "json": "&r=json",
+  "callback": "&callback=",
+  "formatDetailsPath": function(query, callback) {
+    return omdbAPI.imdbID + query.id + omdbAPI.plot + omdbAPI.json + omdbAPI.callback + callback;
+  },
+  "formatMoviePath": function(query, callback) {
+    var reYear = /^[1|2][9|0][\d]{2}$/;
+    var search = reYear.test(query.year) ? query.title + "&y=" + query.year : query.title;
+    return omdbAPI.search + search + omdbAPI.plot + omdbAPI.json + omdbAPI.callback + callback;
+  }
+};
+
+var request = function(apiTool, branch, query, pages) {
+  return new Promise(function(resolve, reject) {
+
+    var callbackName = "JSONcallback" + Math.round(100000 * Math.random());
+    window[callbackName] = function(data) {
+      console.log(data);
+      return resolve(data);
+    }
+
+    var JSONPscript = document.createElement('script');
+    JSONPscript.setAttribute("src", apiTool.hostname + apiTool[branch](query, callbackName) + "&page=" + pages);
+    document.body.appendChild(JSONPscript);
+  });
+}
+
+function getPageResults(query) {
+  var requestArray = [
+    request(omdbAPI, "formatMoviePath", query, 1),
+    request(omdbAPI, "formatMoviePath", query, 2),
+    request(omdbAPI, "formatMoviePath", query, 3),
+    request(omdbAPI, "formatMoviePath", query, 4),
+  ];
+  return Promise.all(requestArray);
+}
+
+function getPageDetails(query) {
+  return request(omdbAPI, "formatDetailsPath", query, 1)
+                .then((data) => {
+                  return data;
+                });
+}
+
 /*
  *  Search bar
  *
@@ -64,25 +113,23 @@ $('#submit').click(function(e) {
     "year": $('#year').val().toLowerCase().trim()
   };
 
-  new Request(omdbAPI.hostname)
-      .get(query, omdbAPI.formatMoviePath, 4 )//omdbAPI.search + search + omdbAPI.json, 4)
-      .then(printMovieResults)
-      .fetch();
+  getPageResults(query)//omdbAPI.search + search + omdbAPI.json, 4)
+      .then((dataArray) => {
+        console.log(dataArray);
+        var data = dataArray.reduce((acc, next) => {
+          return acc.concat(next.Search);
+        }, []);
+        console.log(data);
+        printMovieResults(data);
+      });
 });
 
 var printMovieResults = function(movies) {
-  if(movies.Response == "True") {
-    var html = templateEngine(movies.Search, movieTemplate);
+    var html = templateEngine(movies, movieTemplate);
 
     $('#movies').html(html).children().click(onMovieClick);
 
     new PageTurner().run();
-
-  } else if (movies.Error == "Movie not found!") {
-
-    $('#movies').html(noneFound.first + title + noneFound.second);
-
-  }
 };
 
 var onMovieClick = function() {
@@ -90,10 +137,9 @@ var onMovieClick = function() {
   var query = {
     "id": $(this).attr('data-id')
   }
-  new Request(omdbAPI.hostname)
-      .get(query, omdbAPI.formatDetailsPath, 1)
-      .then(printDetails)
-      .fetch();
+
+  getPageDetails(query)
+      .then(printDetails);
 };
 
 var formatPoster = function(poster, template) {
@@ -131,4 +177,4 @@ var returnToResults = function(e) {
   $('.movie').prop('disabled', false);
 };
 
-}(jQuery, RequestApi, omdbAPI, window, document);
+}(jQuery, window, document);
