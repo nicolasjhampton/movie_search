@@ -129,7 +129,13 @@ var printMovieResults = function(movies) {
 
     $('#movies').html(html).children().click(onMovieClick);
 
-    new PageTurner().run();
+    new PageTurner({
+      "animate": "slow",
+      "itemClass": 'movie',
+      "itemsOnPage": 8,
+      "paginationClass": 'pagination',
+      "paginationElement": 'div'
+    }).render();
 };
 
 var onMovieClick = function() {

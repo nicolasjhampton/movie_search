@@ -1,0 +1,25 @@
+{
+  "name": "movie_search",
+  "version": "1.0.0",
+  "description": "A treehouse project for searching the movie api",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nicolasjhampton/movie_search.git"
+  },
+  "author": "Nicolas James Hampton",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nicolasjhampton/movie_search/issues"
+  },
+  "homepage": "https://github.com/nicolasjhampton/movie_search#readme",
+  "dependencies": {
+    "pageturner": "^1.0.0"
+  }
+}
